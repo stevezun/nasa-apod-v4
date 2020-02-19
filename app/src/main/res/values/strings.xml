@@ -1,0 +1,21 @@
+<resources>
+
+  <string name="app_name">APoD Browser</string>
+  <string name="short_title_image">Image</string>
+  <string name="short_title_history">History</string>
+  <string name="long_title_image">APoD Image</string>
+  <string name="long_title_history">APoD History</string>
+  <string name="error_message">Unable to retrieve APoD. (%s)</string>
+  <string name="information">Information</string>
+  <string name="info_ok">OK</string>
+  <string name="access_format">(Accessed %1$d %3$s, last on %2$s)</string>
+  <string name="default_description">Default description</string>
+  <string name="default_title">Default title</string>
+
+  <string name="date_label">Date:</string>
+  <string name="web_url_label">Web page:</string>
+  <string name="web_url_format">https://apod.nasa.gov/apod/ap%1$ty%1$tm%1$td.html</string>
+  <string name="url_label">Media URL:</string>
+  <string name="hd_url_label">HD URL:</string>
+
+</resources>

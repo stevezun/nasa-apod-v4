@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <plurals name="access_count">
+    <item quantity="one">time</item>
+    <item quantity="other">times</item>
+  </plurals>
+</resources>

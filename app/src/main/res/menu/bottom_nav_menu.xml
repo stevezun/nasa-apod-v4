@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+    android:id="@+id/navigation_image"
+    android:icon="@drawable/ic_image"
+    android:title="@string/short_title_image"/>
+
+  <item
+    android:id="@+id/navigation_history"
+    android:icon="@drawable/ic_list"
+    android:title="@string/short_title_history"/>
+
+</menu>

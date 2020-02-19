@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/navigation_map"
+  app:startDestination="@+id/navigation_image">
+
+  <fragment
+    android:id="@+id/navigation_image"
+    android:label="@string/long_title_image"
+    android:name="edu.cnm.deepdive.nasaapod.controller.ImageFragment"
+    tools:layout="@layout/fragment_image"/>
+
+  <fragment
+    android:id="@+id/navigation_history"
+    android:label="@string/long_title_history"
+    android:name="edu.cnm.deepdive.nasaapod.controller.HistoryFragment"
+    tools:layout="@layout/fragment_history"/>
+
+</navigation>

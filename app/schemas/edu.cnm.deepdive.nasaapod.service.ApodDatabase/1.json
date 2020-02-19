@@ -1,0 +1,146 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "e4417bd5a6ee3dd1c7a33b2ee9d29740",
+    "entities": [
+      {
+        "tableName": "Apod",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`apod_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` INTEGER NOT NULL, `title` TEXT NOT NULL COLLATE NOCASE, `description` TEXT NOT NULL, `copyright` TEXT, `media_type` INTEGER NOT NULL, `url` TEXT NOT NULL, `hd_url` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "apod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "copyright",
+            "columnName": "copyright",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mediaType",
+            "columnName": "media_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hdUrl",
+            "columnName": "hd_url",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "apod_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Apod_date",
+            "unique": true,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Apod_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_Apod_title",
+            "unique": false,
+            "columnNames": [
+              "title"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Apod_title` ON `${TABLE_NAME}` (`title`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Access",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`access_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `apod_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, FOREIGN KEY(`apod_id`) REFERENCES `Apod`(`apod_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "access_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "apodId",
+            "columnName": "apod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "access_id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Access_apod_id",
+            "unique": false,
+            "columnNames": [
+              "apod_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Access_apod_id` ON `${TABLE_NAME}` (`apod_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Apod",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "apod_id"
+            ],
+            "referencedColumns": [
+              "apod_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e4417bd5a6ee3dd1c7a33b2ee9d29740')"
+    ]
+  }
+}
