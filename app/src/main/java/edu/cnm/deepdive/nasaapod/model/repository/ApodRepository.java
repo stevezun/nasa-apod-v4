@@ -3,6 +3,7 @@ package edu.cnm.deepdive.nasaapod.model.repository;
 import android.app.Application;
 import android.os.Environment;
 import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 import androidx.lifecycle.LiveData;
 import edu.cnm.deepdive.nasaapod.BuildConfig;
 import edu.cnm.deepdive.nasaapod.model.dao.AccessDao;
@@ -13,16 +14,22 @@ import edu.cnm.deepdive.nasaapod.model.entity.Apod.MediaType;
 import edu.cnm.deepdive.nasaapod.model.pojo.ApodWithStats;
 import edu.cnm.deepdive.nasaapod.service.ApodDatabase;
 import edu.cnm.deepdive.nasaapod.service.ApodService;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.schedulers.Schedulers;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import okhttp3.ResponseBody;
 
 public class ApodRepository {
 
@@ -81,7 +88,38 @@ public class ApodRepository {
     // TODO Add local file download & reference.
     boolean canBeLocal = (apod.getMediaType() == MediaType.IMAGE);
     File file = canBeLocal ? getFile(apod) : null;
-    return Single.fromCallable(apod::getUrl);
+    return Maybe.fromCallable(() ->
+        canBeLocal ? (file.exists() ? file.toURI().toString() : null) : apod.getUrl())
+        .switchIfEmpty((SingleSource<String>) (observer) ->
+            nasa.getFile(apod.getUrl())
+                .map((body) -> {
+                  try {
+                    return download(body, file);
+                  } catch (IOException ex) {
+                    return apod.getUrl();
+                  }
+                })
+                .subscribeOn(Schedulers.from(networkPool))
+                .subscribe(observer)
+        );
+  }
+
+  private String download(ResponseBody body, File file) throws IOException {
+    try (
+        InputStream input = body.byteStream();
+        OutputStream output = new FileOutputStream(file);
+    ) {
+      byte[] buffer = new byte[16_384];
+      int bytesRead = 0;
+      while (bytesRead >= 0) {
+        bytesRead = input.read(buffer);
+        if (bytesRead > 0) {
+          output.write(buffer, 0, bytesRead);
+        }
+      }
+      output.flush();
+      return file.toURI().toString();
+    }
   }
 
   private File getFile(@NonNull Apod apod) {
