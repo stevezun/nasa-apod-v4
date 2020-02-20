@@ -110,13 +110,12 @@ public class ApodRepository {
         OutputStream output = new FileOutputStream(file);
     ) {
       byte[] buffer = new byte[16_384];
-      int bytesRead = 0;
-      while (bytesRead >= 0) {
-        bytesRead = input.read(buffer);
-        if (bytesRead > 0) {
+      int bytesRead;
+      do {
+        if ((bytesRead = input.read(buffer)) > 0) {
           output.write(buffer, 0, bytesRead);
         }
-      }
+      } while (bytesRead >= 0);
       output.flush();
       return file.toURI().toString();
     }

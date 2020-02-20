@@ -70,6 +70,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
     throwable.setValue(null);
     pending.add(
         repository.getImage(apod)
+            // Consume result on main thread, since pathConsumer will probably "touch" the UI.
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 pathConsumer,
