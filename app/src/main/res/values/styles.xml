@@ -9,16 +9,21 @@
   </style>
 
   <style name="HistoryItem" parent="AppTheme">
-    <item name="android:textSize">16sp</item>
-    <item name="android:layout_margin">@dimen/item_apod_spacing</item>
+    <item name="android:textSize">@dimen/list_item_text_size</item>
+    <item name="android:layout_margin">@dimen/list_content_spacing</item>
+  </style>
+
+  <style name="HistoryItem.Container" parent="HistoryItem">
+    <item name="cardCornerRadius">@dimen/list_item_radius</item>
+    <item name="android:layout_margin">@dimen/list_item_spacing</item>
   </style>
 
   <style name="HistoryItem.Title" parent="HistoryItem">
+    <item name="android:textSize">@dimen/list_item_title_size</item>
     <item name="android:textStyle">bold</item>
   </style>
 
   <style name="HistoryItem.Access" parent="HistoryItem">
-    <item name="android:textSize">12sp</item>
     <item name="android:textStyle">italic</item>
   </style>
 
@@ -30,6 +35,12 @@
 
   <style name="BodyText" parent="AppTheme">
     <item name="android:layout_marginTop">@dimen/info_item_spacing</item>
+  </style>
+
+  <style name="HistoryList">
+    <item name="android:orientation">vertical</item>
+    <item name="android:background">@color/historyListBackground</item>
+    <item name="android:padding">@dimen/list_item_spacing</item>
   </style>
 
 </resources>
