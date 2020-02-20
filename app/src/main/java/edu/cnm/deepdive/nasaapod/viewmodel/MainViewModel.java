@@ -12,10 +12,8 @@ import edu.cnm.deepdive.nasaapod.model.entity.Apod;
 import edu.cnm.deepdive.nasaapod.model.pojo.ApodWithStats;
 import edu.cnm.deepdive.nasaapod.model.repository.ApodRepository;
 import edu.cnm.deepdive.nasaapod.service.ApodService;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +62,14 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
             .doOnError(throwable::postValue)
             .subscribe()
     );
+  }
+
+  public void getImage(@NonNull Apod apod, @NonNull Consumer<String> pathConsumer) {
+    throwable.setValue(null);
+    repository.getImage(apod)
+        .doOnSuccess(pathConsumer)
+        .doOnError(throwable::postValue)
+        .subscribe();
   }
 
   @SuppressWarnings("unused")
