@@ -1,9 +1,9 @@
 package edu.cnm.deepdive.nasaapod.model.repository;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Environment;
 import androidx.annotation.NonNull;
-import androidx.core.app.JobIntentService;
 import androidx.lifecycle.LiveData;
 import edu.cnm.deepdive.nasaapod.BuildConfig;
 import edu.cnm.deepdive.nasaapod.model.dao.AccessDao;
@@ -126,6 +126,7 @@ public class ApodRepository {
     File file = null;
     Matcher matcher = URL_FILENAME_PATTERN.matcher(url);
     if (matcher.matches()) {
+      @SuppressLint("DefaultLocale")
       String filename = String.format(LOCAL_FILENAME_FORMAT, apod.getDate(), matcher.group(1));
       File directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
       if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState(directory))) {
