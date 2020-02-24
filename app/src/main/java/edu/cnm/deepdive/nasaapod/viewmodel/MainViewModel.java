@@ -28,7 +28,6 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
 
   public MainViewModel(@NonNull Application application) {
     super(application);
-    ApodRepository.setContext(application);
     repository = ApodRepository.getInstance();
     apod = new MutableLiveData<>();
     throwable = new MutableLiveData<>();
