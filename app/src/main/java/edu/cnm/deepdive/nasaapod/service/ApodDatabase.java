@@ -39,9 +39,9 @@ public abstract class ApodDatabase extends RoomDatabase {
 
   private static class InstanceHolder {
 
-    private static final ApodDatabase INSTANCE = Room.databaseBuilder(
-        context, ApodDatabase.class, DB_NAME)
-        .build();
+    private static final ApodDatabase INSTANCE =
+        Room.databaseBuilder(context, ApodDatabase.class, DB_NAME)
+            .build();
 
   }
 
