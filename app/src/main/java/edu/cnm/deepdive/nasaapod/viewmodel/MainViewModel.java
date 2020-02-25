@@ -1,7 +1,6 @@
 package edu.cnm.deepdive.nasaapod.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Lifecycle.Event;
@@ -109,10 +108,7 @@ public class MainViewModel extends AndroidViewModel implements LifecycleObserver
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe(
               onSuccess,
-              (th) -> {
-                throwable.setValue(th);
-                Log.e(getClass().getSimpleName(), th.getMessage(), th);
-              }
+              throwable::setValue
           )
     );
   }
