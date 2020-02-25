@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Environment;
-import android.provider.MediaStore.Audio.Media;
+import android.provider.MediaStore.Images.Media;
 import android.provider.MediaStore.MediaColumns;
 import android.webkit.MimeTypeMap;
 import androidx.annotation.NonNull;
@@ -147,7 +147,6 @@ public class ApodRepository {
     ContentValues contentValues = new ContentValues();
     contentValues.put(MediaColumns.DISPLAY_NAME, title);
     contentValues.put(MediaColumns.MIME_TYPE, mimeType);
-    contentValues.put(MediaColumns.TITLE, title);
     if (VERSION.SDK_INT >= VERSION_CODES.Q) {
       contentValues.put(MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
     }
