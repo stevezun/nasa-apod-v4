@@ -1,8 +1,9 @@
 package edu.cnm.deepdive.nasaapod.controller;
 
-import android.Manifest.permission;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -22,8 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import edu.cnm.deepdive.android.DateTimePickerFragment;
-import edu.cnm.deepdive.android.DateTimePickerFragment.Mode;
+import edu.cnm.deepdive.nasaapod.controller.DateTimePickerFragment.Mode;
 import edu.cnm.deepdive.nasaapod.R;
 import edu.cnm.deepdive.nasaapod.service.GoogleSignInRepository;
 import edu.cnm.deepdive.nasaapod.viewmodel.MainViewModel;
@@ -32,7 +32,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements PermissionsFragment.OnAcknowledgeListener, DateTimePickerFragment.OnChangeListener {
 
   private static final int EXTERNAL_STORAGE_REQUEST_CODE = 1000;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     setupNavigation();
     setupViewModel();
     setupCalendarPicker();
-    checkPermissions(permission.READ_EXTERNAL_STORAGE, permission.WRITE_EXTERNAL_STORAGE);
+    checkPermissions();
   }
 
   @Override
@@ -61,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
     return true;
   }
 
+  @SuppressWarnings("SwitchStatementWithTooFewBranches")
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     boolean handled = true;
-    //noinspection SwitchStatementWithTooFewBranches
     switch (item.getItemId()) {
       case R.id.sign_out:
         GoogleSignInRepository.getInstance().signOut()
@@ -96,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
     } else {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+  }
+
+  @Override
+  public void onAcknowledge(String[] permissionsToRequest) {
+    ActivityCompat.requestPermissions(this, permissionsToRequest, EXTERNAL_STORAGE_REQUEST_CODE);
+  }
+
+  @Override
+  public void onChange(Calendar calendar) {
+    loadApod(calendar.getTime());
   }
 
   public void loadApod(Date date) {
@@ -149,10 +160,7 @@ public class MainActivity extends AppCompatActivity {
     calendar = Calendar.getInstance();
     FloatingActionButton calendarFab = findViewById(R.id.calendar_fab);
     calendarFab.setOnClickListener((v) -> {
-      DateTimePickerFragment fragment = new DateTimePickerFragment();
-      fragment.setCalendar(calendar);
-      fragment.setMode(Mode.DATE);
-      fragment.setOnChangeListener((cal) -> loadApod(cal.getTime()));
+      DateTimePickerFragment fragment = DateTimePickerFragment.createInstance(Mode.DATE, calendar);
       fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
     });
   }
@@ -166,7 +174,15 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  private void checkPermissions(String... permissions) {
+  private void checkPermissions() {
+    String[] permissions = null;
+    try {
+      PackageInfo info = getPackageManager().getPackageInfo(getPackageName(),
+          PackageManager.GET_META_DATA | PackageManager.GET_PERMISSIONS);
+      permissions = info.requestedPermissions;
+    } catch (NameNotFoundException e) {
+      throw new RuntimeException(e);
+    }
     List<String> permissionsToRequest = new LinkedList<>();
     List<String> permissionsToExplain = new LinkedList<>();
     for (String permission : permissions) {
@@ -181,12 +197,17 @@ public class MainActivity extends AppCompatActivity {
       }
     }
     if (!permissionsToExplain.isEmpty()) {
-      // TODO Explain to user.
+      explainPermissions(
+          permissionsToExplain.toArray(new String[0]), permissionsToRequest.toArray(new String[0]));
+    } else if (!permissionsToRequest.isEmpty()) {
+      onAcknowledge(permissionsToRequest.toArray(new String[0]));
     }
-    if (!permissionsToRequest.isEmpty()) {
-      ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[0]),
-          EXTERNAL_STORAGE_REQUEST_CODE);
-    }
+  }
+
+  private void explainPermissions(String[] permissionsToExplain, String[] permissionsToRequest) {
+    PermissionsFragment fragment =
+        PermissionsFragment.createInstance(permissionsToExplain, permissionsToRequest);
+    fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
   }
 
 }

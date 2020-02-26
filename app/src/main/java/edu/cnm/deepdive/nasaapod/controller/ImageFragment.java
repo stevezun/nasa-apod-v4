@@ -3,6 +3,8 @@ package edu.cnm.deepdive.nasaapod.controller;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.annotation.SuppressLint;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +26,8 @@ import edu.cnm.deepdive.nasaapod.model.entity.Apod.MediaType;
 import edu.cnm.deepdive.nasaapod.viewmodel.MainViewModel;
 
 public class ImageFragment extends Fragment {
+
+  private static final int SCOPED_STORAGE_BUILD_VERSION = VERSION_CODES.Q;
 
   private WebView contentView;
   private Apod apod;
@@ -76,7 +80,10 @@ public class ImageFragment extends Fragment {
     download.setVisible(
         apod != null
         && apod.getMediaType() == MediaType.IMAGE
-        && showDownload
+        && (
+            showDownload
+            || VERSION.SDK_INT >= SCOPED_STORAGE_BUILD_VERSION
+        )
     );
   }
 
@@ -88,12 +95,7 @@ public class ImageFragment extends Fragment {
         showInfo();
         break;
       case R.id.download:
-        MainActivity activity = (MainActivity) getActivity();
-        activity.setProgressVisibility(View.VISIBLE);
-        viewModel.downloadImage(apod, () -> {
-          activity.setProgressVisibility(View.GONE);
-          activity.showToast(getString(R.string.image_downloaded));
-        });
+        downloadImage();
         break;
       default:
         handled = super.onOptionsItemSelected(item);
@@ -105,6 +107,15 @@ public class ImageFragment extends Fragment {
     if (apod != null) {
       new InfoFragment().show(getChildFragmentManager(), InfoFragment.class.getName());
     }
+  }
+
+  private void downloadImage() {
+    MainActivity activity = (MainActivity) getActivity();
+    activity.setProgressVisibility(View.VISIBLE);
+    viewModel.downloadImage(apod, () -> {
+      activity.setProgressVisibility(View.GONE);
+      activity.showToast(getString(R.string.image_downloaded));
+    });
   }
 
   @SuppressLint({"SetJavaScriptEnabled"})
