@@ -14,18 +14,17 @@ public class ApodApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-    Stetho.initializeWithDefaults(this);
+    ApodDatabase.setContext(this);
+    ApodRepository.setContext(this);
+    GoogleSignInRepository.setContext(this);
     Picasso.setSingletonInstance(
         new Picasso.Builder(this)
             .loggingEnabled(BuildConfig.HTTP_LOG_LEVEL != Level.NONE)
             .build()
     );
-    GoogleSignInRepository.setContext(this);
-    ApodDatabase.setContext(this);
-    ApodRepository.setContext(this);
-    ApodDatabase.getInstance().getApodDao().delete()
-        .subscribeOn(Schedulers.io())
-        .subscribe();
+    if (BuildConfig.DEBUG) {
+      Stetho.initializeWithDefaults(this);
+    }
   }
 
 }
