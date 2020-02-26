@@ -23,8 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import edu.cnm.deepdive.android.DateTimePickerFragment;
-import edu.cnm.deepdive.android.DateTimePickerFragment.Mode;
+import edu.cnm.deepdive.nasaapod.controller.DateTimePickerFragment.Mode;
 import edu.cnm.deepdive.nasaapod.R;
 import edu.cnm.deepdive.nasaapod.service.GoogleSignInRepository;
 import edu.cnm.deepdive.nasaapod.viewmodel.MainViewModel;
@@ -34,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-    implements PermissionsFragment.OnAcknowledgeListener {
+    implements PermissionsFragment.OnAcknowledgeListener, DateTimePickerFragment.OnChangeListener {
 
   private static final int EXTERNAL_STORAGE_REQUEST_CODE = 1000;
 
@@ -105,6 +104,11 @@ public class MainActivity extends AppCompatActivity
     ActivityCompat.requestPermissions(this, permissionsToRequest, EXTERNAL_STORAGE_REQUEST_CODE);
   }
 
+  @Override
+  public void onChange(Calendar calendar) {
+    loadApod(calendar.getTime());
+  }
+
   public void loadApod(Date date) {
     setProgressVisibility(View.VISIBLE);
     viewModel.setApodDate(date);
@@ -156,10 +160,7 @@ public class MainActivity extends AppCompatActivity
     calendar = Calendar.getInstance();
     FloatingActionButton calendarFab = findViewById(R.id.calendar_fab);
     calendarFab.setOnClickListener((v) -> {
-      DateTimePickerFragment fragment = new DateTimePickerFragment();
-      fragment.setCalendar(calendar);
-      fragment.setMode(Mode.DATE);
-      fragment.setOnChangeListener((cal) -> loadApod(cal.getTime()));
+      DateTimePickerFragment fragment = DateTimePickerFragment.createInstance(Mode.DATE, calendar);
       fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
     });
   }

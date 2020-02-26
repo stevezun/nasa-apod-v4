@@ -145,6 +145,7 @@ public class ApodRepository {
     MimeTypeMap map = MimeTypeMap.getSingleton();
     String mimeType = map.getMimeTypeFromExtension(extension);
     ContentValues contentValues = new ContentValues();
+    contentValues.put(MediaColumns.TITLE, title);
     contentValues.put(MediaColumns.DISPLAY_NAME, title);
     contentValues.put(MediaColumns.MIME_TYPE, mimeType);
     if (VERSION.SDK_INT >= VERSION_CODES.Q) {
