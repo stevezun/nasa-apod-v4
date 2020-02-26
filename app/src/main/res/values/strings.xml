@@ -22,4 +22,7 @@
   <string name="download_image">Download image</string>
   <string name="image_downloaded">Image downloaded to gallery.</string>
 
+  <string name="permissions_title">Permissions</string>
+  <string name="write_external_storage_explanation">Downloading of NASA APoD images to Android gallery will be disabled if external file permissions are denied.</string>
+
 </resources>
