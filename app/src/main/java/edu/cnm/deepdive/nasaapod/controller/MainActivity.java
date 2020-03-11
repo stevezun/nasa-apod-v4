@@ -75,6 +75,10 @@ public class MainActivity extends AppCompatActivity
               startActivity(intent);
             });
         break;
+      case R.id.settings:
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity( intent );
+        break;
       default:
         handled = super.onOptionsItemSelected(item);
     }

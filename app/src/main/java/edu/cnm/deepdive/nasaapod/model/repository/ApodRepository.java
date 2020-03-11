@@ -4,16 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Environment;
 import android.provider.MediaStore.Images.Media;
 import android.provider.MediaStore.MediaColumns;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.preference.PreferenceManager;
 import edu.cnm.deepdive.nasaapod.BuildConfig;
+import edu.cnm.deepdive.nasaapod.R;
 import edu.cnm.deepdive.nasaapod.model.dao.AccessDao;
 import edu.cnm.deepdive.nasaapod.model.dao.ApodDao;
 import edu.cnm.deepdive.nasaapod.model.entity.Access;
@@ -40,7 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import okhttp3.ResponseBody;
 
-public class ApodRepository {
+public class ApodRepository implements SharedPreferences.OnSharedPreferenceChangeListener {
 
   private static final int NETWORK_THREAD_COUNT = 10;
   private static final Pattern URL_FILENAME_PATTERN =
@@ -52,6 +56,7 @@ public class ApodRepository {
   private final ApodDatabase database;
   private final ApodService nasa;
   private final Executor networkPool;
+  private final SharedPreferences preferences;
 
   private static Application context;
 
@@ -62,6 +67,8 @@ public class ApodRepository {
     database = ApodDatabase.getInstance();
     nasa = ApodService.getInstance();
     networkPool = Executors.newFixedThreadPool(NETWORK_THREAD_COUNT);
+    preferences = PreferenceManager.getDefaultSharedPreferences( context );
+    preferences.registerOnSharedPreferenceChangeListener( this );
   }
 
   public static void setContext(Application context) {
@@ -205,6 +212,13 @@ public class ApodRepository {
     accessDao.insert(access)
         .subscribeOn(Schedulers.io())
         .subscribe(/* TODO Handle error result */);
+  }
+
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    int cacheSize = preferences.getInt( context.getString( R.string.cache_size ), 0);
+    Log.d(getClass().getName(), String.format( "Cache size = %d", cacheSize ));
+    //TODO Use update preference.
   }
 
   private static class InstanceHolder {

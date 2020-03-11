@@ -25,5 +25,8 @@
   <string name="permissions_title">Permissions</string>
   <string name="write_external_storage_explanation">Downloading of NASA APoD images to Android gallery will be disabled if external file permissions are denied.</string>
   <string name="settings">Settings</string>
+  <string name="cache_size">cacheSize</string>
+  <string name="cache_size_title">File download cache size</string>
+  <string name="cache_size_summary">Maximum number of automatically downloaded images to retain</string>
 
 </resources>
