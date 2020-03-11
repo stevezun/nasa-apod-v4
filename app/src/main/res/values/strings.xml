@@ -24,5 +24,6 @@
 
   <string name="permissions_title">Permissions</string>
   <string name="write_external_storage_explanation">Downloading of NASA APoD images to Android gallery will be disabled if external file permissions are denied.</string>
+  <string name="settings">Settings</string>
 
 </resources>
